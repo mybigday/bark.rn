@@ -19,6 +19,7 @@ FetchContent_MakeAvailable(BARK_CPP)
 
 add_library(bark-rn            SHARED
             ../cpp/utils.cpp
+            ../cpp/dr_wav.h
             cpp-adapter.cpp
 )
 

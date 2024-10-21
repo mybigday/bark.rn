@@ -1,3 +1,4 @@
+#define DR_WAV_IMPLEMENTATION
 #include "utils.h"
 #include "dr_wav.h"
 

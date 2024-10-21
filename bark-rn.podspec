@@ -39,16 +39,14 @@ Pod::Spec.new do |s|
     end
   end
 
-  if const_defined?(:ReactNativePodsUtils) && ReactNativePodsUtils.respond_to?(:spm_dependency)
-    ReactNativePodsUtils.spm_dependency(s,
+  if defined?(:spm_dependency)
+    spm_dependency(s,
       url: 'https://github.com/PABannier/bark.cpp.git',
-      requirement: {kind: 'upToNextMajorVersion', minimumVersion: '1.0.0'},
-      products: spm_products
+      requirement: {kind: 'branch', branch: 'main'},
+      products: ['bark']
     )
   elsif s.respond_to?(:spm_dependency)
-    for product in spm_products
-      s.spm_dependency "bark"
-    end
+    s.spm_dependency "bark/bark"
   else
     raise "Please upgrade React Native to >=0.75.0 or install `cocoapods-spm` plugin"
   end

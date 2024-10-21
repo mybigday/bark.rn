@@ -40,9 +40,9 @@ class BarkRnModule internal constructor(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  override fun generate(id: Int, text: String, audio_path: String, threads: Int, promise: Promise) {
+  override fun generate(id: Int, text: String, audio_path: String, promise: Promise) {
     contexts[id]?.let { context ->
-      val result = context.generate(text, audio_path, threads)
+      val result = context.generate(text, audio_path)
       val resultMap = Arguments.createMap()
       resultMap.putBoolean("success", result.success)
       resultMap.putInt("load_time", result.load_time)
