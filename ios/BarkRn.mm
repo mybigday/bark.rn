@@ -6,7 +6,7 @@
 @interface BarkRn ()
 
 @property (nonatomic, retain) NSMutableDictionary *contexts;
-@property (nonatomic, assign) NSInteger next_id;
+@property (nonatomic, assign) int next_id;
 
 @end
 
@@ -23,22 +23,17 @@ RCT_EXPORT_MODULE()
     return self;
 }
 
-- (void)dealloc {
-    [self.contexts removeAllObjects];
-    [super dealloc];
-}
-
 RCT_EXPORT_METHOD(init_context: (NSString *)model_path
                   params: (NSDictionary *)ns_params
                   resolve: (RCTPromiseResolveBlock)resolve
                   reject: (RCTPromiseRejectBlock)reject) {
-    try {
+    @try {
         BarkContext *context = [[BarkContext alloc] initWithModelPath:model_path params:ns_params];
-        self.contexts[self.next_id] = context;
-        resolve(self.next_id);
+        [self.contexts setObject:context forKey:@(self.next_id)];
+        resolve(@(self.next_id));
         self.next_id++;
     } @catch (NSException *e) {
-        reject(@"init_context", @"Failed to init context", e);
+        reject(@"init_context", e.reason, nil);
     }
 }
 
@@ -47,19 +42,23 @@ RCT_EXPORT_METHOD(generate: (NSInteger)_id
                   out_path: (NSString *)out_path
                   resolve: (RCTPromiseResolveBlock)resolve
                   reject: (RCTPromiseRejectBlock)reject) {
-    if (!self.contexts[_id]) {
+    BarkContext *context = [self.contexts objectForKey:@(_id)];
+    if (!context) {
         reject(@"generate", @"Context not found", nil);
         return;
     }
-    BarkContext *context = self.contexts[_id];
-    NSDictionary *result = [context generate:text out_path:out_path];
-    resolve(result);
+    @try {
+        NSDictionary *result = [context generate:text out_path:out_path];
+        resolve(result);
+    } @catch (NSException *e) {
+        reject(@"generate", e.reason, nil);
+    }
 }
 
 RCT_EXPORT_METHOD(release_context: (NSInteger)_id
                   resolve: (RCTPromiseResolveBlock)resolve
                   reject: (RCTPromiseRejectBlock)reject) {
-    if (self.contexts[_id]) {
+    if ([self.contexts objectForKey:@(_id)]) {
         [self.contexts removeObjectForKey:@(_id)];
     }
     resolve(nil);

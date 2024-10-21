@@ -8,8 +8,6 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, "14.0"
 prepare_react_native_project!
 
-plugin "cocoapods-spm"
-
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -17,8 +15,6 @@ if linkage != nil
 end
 
 target 'BarkRnExample' do
-  spm_pkg "bark", :url => "https://github.com/PABannier/bark.cpp.git", :branch => "main"
-
   config = use_native_modules!
 
   use_react_native!(

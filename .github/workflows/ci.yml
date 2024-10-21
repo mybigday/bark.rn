@@ -57,6 +57,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -104,6 +106,7 @@ jobs:
         env:
           JAVA_OPTS: "-XX:MaxHeapSize=6g"
         run: |
+          yarn bootstrap
           yarn turbo run build:android --cache-dir="${{ env.TURBO_CACHE_DIR }}"
 
   build-ios:
@@ -113,6 +116,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -154,4 +159,5 @@ jobs:
 
       - name: Build example for iOS
         run: |
+          yarn bootstrap
           yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"

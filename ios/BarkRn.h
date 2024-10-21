@@ -1,8 +1,3 @@
-#ifdef __cplusplus
-#import "bark.h"
-#import "utils.h"
-#endif
-
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNBarkRnSpec.h"
 

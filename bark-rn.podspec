@@ -14,7 +14,14 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "14.0", :tvos => "14.0" }
   s.source       = { :git => "https://github.com/mybigday/bark.rn.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}", "cpp/**/*.{hpp,cpp,c,h}"
+  s.source_files = "ios/**/*.{h,m,mm}",
+                   "cpp/ggml.{c,h}",
+                   "cpp/ggml-alloc.{c,h}",
+                   "cpp/ggml-backend.{c,h}",
+                   "cpp/encodec.{cpp,h}",
+                   "cpp/bark.{cpp,h}",
+                   "cpp/dr_wav.h",
+                   "cpp/utils.{cpp,h}"
 
   # Use install_modules_dependencies helper to install the dependencies if React Native version >=0.71.0.
   # See https://github.com/facebook/react-native/blob/febf6b7f33fdb4904669f99d795eba4c0f95d7bf/scripts/cocoapods/new_architecture.rb#L79.
@@ -37,17 +44,5 @@ Pod::Spec.new do |s|
       s.dependency "RCTTypeSafety"
       s.dependency "ReactCommon/turbomodule/core"
     end
-  end
-
-  if defined?(:spm_dependency)
-    spm_dependency(s,
-      url: 'https://github.com/PABannier/bark.cpp.git',
-      requirement: {kind: 'branch', branch: 'main'},
-      products: ['bark']
-    )
-  elsif s.respond_to?(:spm_dependency)
-    s.spm_dependency "bark/bark"
-  else
-    raise "Please upgrade React Native to >=0.75.0 or install `cocoapods-spm` plugin"
   end
 end

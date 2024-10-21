@@ -4,29 +4,33 @@ project(BarkRn)
 set (CMAKE_VERBOSE_MAKEFILE ON)
 set (CMAKE_CXX_STANDARD 17)
 
-include(FetchContent)
+set(CMAKE_C_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-set(BARK_BUILD_EXAMPLES OFF CACHE BOOL "Build examples" FORCE)
-
-FetchContent_Declare(
-    BARK_CPP
-    GIT_REPOSITORY https://github.com/PABannier/bark.cpp.git
-    GIT_TAG        v1.0.0
-    GIT_PROGRESS   TRUE
-    GIT_SHALLOW    TRUE
-)
-FetchContent_MakeAvailable(BARK_CPP)
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfma -mf16c -mavx -mavx2")
+endif()
 
 add_library(bark-rn            SHARED
+            ../cpp/utils.h
             ../cpp/utils.cpp
             ../cpp/dr_wav.h
+            ../cpp/ggml.h
+            ../cpp/ggml.c
+            ../cpp/ggml-alloc.h
+            ../cpp/ggml-alloc.c
+            ../cpp/ggml-backend.h
+            ../cpp/ggml-backend.c
+            ../cpp/bark.h
+            ../cpp/bark.cpp
+            ../cpp/encodec.h
+            ../cpp/encodec.cpp
             cpp-adapter.cpp
 )
 
 # Specifies a path to native header files.
 include_directories(
             ../cpp
-            ${BARK_CPP_SOURCE_DIR}
 )
 
-target_link_libraries(bark-rn PUBLIC bark)
+target_link_libraries(bark-rn PUBLIC m)

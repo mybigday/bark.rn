@@ -37,6 +37,7 @@
     "!**/.*"
   ],
   "scripts": {
+    "bootstrap": "./scripts/bootstrap.sh",
     "example": "yarn workspace bark.rn-example",
     "test": "jest",
     "typecheck": "tsc",
