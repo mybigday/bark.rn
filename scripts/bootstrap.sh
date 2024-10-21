@@ -3,7 +3,7 @@
 set -x
 set -e
 
-ROOT=$(realpath $(dirname $0)/..)
+ROOT=$(realpath $(dirname $(dirname $0)))
 
 cp \
   $ROOT/bark.cpp/bark.h \
