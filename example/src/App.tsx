@@ -7,10 +7,14 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    BarkContext.load('model.bin').then((ctx) => {
-      context.current = ctx;
-      setLoaded(true);
-    });
+    BarkContext.load('model.bin')
+      .then((ctx) => {
+        context.current = ctx;
+        setLoaded(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   const generate = useCallback(async () => {

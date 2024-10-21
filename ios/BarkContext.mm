@@ -26,10 +26,11 @@
         if (n_threads == 0) n_threads = 1;
         bark_context_params params = [Convert convert_params:ns_params];
         try {
-            context = std::shared_ptr<bark_context>(
-                bark_load_model([model_path UTF8String], params, seed),
-                bark_free
-            );
+            bark_context *ctx = bark_load_model([model_path UTF8String], params, seed);
+            if (ctx == nullptr) {
+                @throw [NSException exceptionWithName:@"BarkContext" reason:@"Failed to load model" userInfo:nil];
+            }
+            context = std::shared_ptr<bark_context>(ctx, bark_free);
         } catch (const std::exception &e) {
             @throw [NSException exceptionWithName:@"BarkContext" reason:[NSString stringWithUTF8String:e.what()] userInfo:nil];
         }

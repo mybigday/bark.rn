@@ -50,10 +50,9 @@ class BarkContext {
 
   generate(
     text: string,
-    out_path: string,
-    threads: number = -1
+    out_path: string
   ): Promise<{ success: boolean; load_time: number; eval_time: number }> {
-    return BarkRn.generate(this.id, text, out_path, threads);
+    return BarkRn.generate(this.id, text, out_path);
   }
 
   release(): Promise<void> {

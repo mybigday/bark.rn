@@ -17,6 +17,9 @@ class BarkContext {
 
   constructor(model_path: String, params: Map<String, Any>) {
     context = nativeInitContext(model_path, params)
+    if (context == 0L) {
+      throw IllegalStateException("Failed to initialize context")
+    }
     if (params.containsKey("sample_rate")) {
       sample_rate = params["sample_rate"] as Int
     }

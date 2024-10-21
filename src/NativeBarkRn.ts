@@ -8,6 +8,7 @@ export enum BarkVerbosityLevel {
 }
 
 export interface BarkContextParams {
+  n_threads?: number;
   seed?: number;
   verbosity?: BarkVerbosityLevel;
   temp?: number;
@@ -39,8 +40,7 @@ export interface Spec extends TurboModule {
   generate(
     id: number,
     text: string,
-    audio_path: string,
-    threads: number
+    audio_path: string
   ): Promise<{ success: boolean; load_time: number; eval_time: number }>;
   release_context(id: number): Promise<void>;
   release_all_contexts(): Promise<void>;
