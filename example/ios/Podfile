@@ -23,6 +23,11 @@ target 'BarkRnExample' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  spm_pkg "bark",
+    :url => "https://github.com/PABannier/bark.cpp.git",
+    :branch => "1.0.0",
+    :products => ["bark"]
+
   target 'BarkRnExampleTests' do
     inherit! :complete
     # Pods for testing
