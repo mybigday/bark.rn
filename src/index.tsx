@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+import type { BarkContextParams } from './NativeBarkRn';
 
 const LINKING_ERROR =
   `The package 'bark.rn' doesn't seem to be linked. Make sure: \n\n` +
@@ -30,32 +31,7 @@ export enum BarkVerbosityLevel {
   HIGH = 2,
 }
 
-export type BarkContextParams = {
-  seed?: number;
-  verbosity?: BarkVerbosityLevel;
-  temp?: number;
-  fine_temp?: number;
-  min_eos_p?: number;
-  sliding_window_size?: number;
-  max_coarse_history?: number;
-  sample_rate?: number;
-  target_bandwidth?: number;
-  cls_token_id?: number;
-  sep_token_id?: number;
-  n_steps_text_encoder?: number;
-  text_pad_token?: number;
-  text_encoding_offset?: number;
-  semantic_rate_hz?: number;
-  semantic_pad_token?: number;
-  semantic_vocab_size?: number;
-  semantic_infer_token?: number;
-  coarse_rate_hz?: number;
-  coarse_infer_token?: number;
-  coarse_semantic_pad_token?: number;
-  n_coarse_codebooks?: number;
-  n_fine_codebooks?: number;
-  codebook_size?: number;
-};
+export type { BarkContextParams };
 
 class BarkContext {
   id: number;
