@@ -20,10 +20,14 @@ npm install bark.rn
 target "YourApp" do
   # ...
 
+  # Add these lines
   spm_pkg "bark",
     :url => "https://github.com/PABannier/bark.cpp.git",
     :branch => "1.0.0",
     :products => ["bark"]
+
+  # spm_pkg should be before use_native_modules!
+  config = use_native_modules!
 
   # ...
 end
