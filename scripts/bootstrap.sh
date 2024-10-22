@@ -1,24 +1,27 @@
 #!/bin/bash
 
-set -x
-set -e
+set -x -e
 
-ROOT=$(realpath $(dirname $(dirname $0)))
+cd $(realpath $(dirname $(dirname $0)))
 
-cp \
-  $ROOT/bark.cpp/bark.h \
-  $ROOT/bark.cpp/bark.cpp \
-  $ROOT/bark.cpp/encodec.cpp/encodec.cpp \
-  $ROOT/bark.cpp/encodec.cpp/encodec.h \
-  $ROOT/bark.cpp/encodec.cpp/ggml/include/ggml/ggml.h \
-  $ROOT/bark.cpp/encodec.cpp/ggml/include/ggml/ggml-alloc.h \
-  $ROOT/bark.cpp/encodec.cpp/ggml/include/ggml/ggml-backend.h \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml.c \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-alloc.c \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-backend.c \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-metal.h \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-metal.m \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-metal.metal \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-opencl.cpp \
-  $ROOT/bark.cpp/encodec.cpp/ggml/src/ggml-opencl.h \
-  $ROOT/cpp
+FILES=(
+  bark.cpp/bark.h
+  bark.cpp/bark.cpp
+  bark.cpp/encodec.cpp/encodec.cpp
+  bark.cpp/encodec.cpp/encodec.h
+  bark.cpp/encodec.cpp/ggml/include/ggml/ggml.h
+  bark.cpp/encodec.cpp/ggml/include/ggml/ggml-alloc.h
+  bark.cpp/encodec.cpp/ggml/include/ggml/ggml-backend.h
+  bark.cpp/encodec.cpp/ggml/src/ggml.c
+  bark.cpp/encodec.cpp/ggml/src/ggml-alloc.c
+  bark.cpp/encodec.cpp/ggml/src/ggml-backend.c
+  bark.cpp/encodec.cpp/ggml/src/ggml-metal.h
+  bark.cpp/encodec.cpp/ggml/src/ggml-metal.m
+  bark.cpp/encodec.cpp/ggml/src/ggml-metal.metal
+  bark.cpp/encodec.cpp/ggml/src/ggml-opencl.cpp
+  bark.cpp/encodec.cpp/ggml/src/ggml-opencl.h
+)
+
+for file in "${FILES[@]}"; do
+  cp "$file" "cpp"
+done
