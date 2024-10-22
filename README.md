@@ -8,40 +8,21 @@ Bark.cpp integration for React Native
 npm install bark.rn
 ```
 
-### Setup for iOS with React Native < 0.75
-
-1. Install `cocoapods-spm`
-
-2. Add these lines in `Podfile`
-
-```rb
-# ...
-
-target "YourApp" do
-  # ...
-
-  # Add these lines
-  spm_pkg "bark",
-    :url => "https://github.com/PABannier/bark.cpp.git",
-    :branch => "main",
-    :products => ["bark"]
-
-  # spm_pkg should be before use_native_modules!
-  config = use_native_modules!
-
-  # ...
-end
-```
-
 ## Usage
 
 
 ```js
-import { multiply } from 'bark.rn';
+import BarkContext from 'bark.rn';
 
-// ...
+// Load model
+const ctx = await BarkContext.load('path/to/model.bin');
 
-const result = await multiply(3, 7);
+// Inference
+const result = await ctx.generate('Hello, world!', 'path/to/output.wav');
+// Result: { success: boolean, load_time: number, eval_time: number }
+
+// Release context
+await ctx.release();
 ```
 
 
