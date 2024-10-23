@@ -3,7 +3,6 @@
 #include <jni.h>
 #include <thread>
 #include <tuple>
-#include <type_traits>
 
 template <typename T>
 T get_map_value(JNIEnv *env, jobject params, const char *key) {
@@ -11,12 +10,11 @@ T get_map_value(JNIEnv *env, jobject params, const char *key) {
   jmethodID get_method = env->GetMethodID(
       map_class, "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
   jobject value = env->CallObjectMethod(params, get_method, env->NewStringUTF(key));
-  if constexpr (std::is_same_v<T, jfloat>) {
-    jclass float_class = env->FindClass("java/lang/Float");
-    return env->CallFloatMethod(value, env->GetMethodID(float_class, "floatValue", "()F"));
-  } else if constexpr (std::is_same_v<T, jint>) {
-    jclass int_class = env->FindClass("java/lang/Integer");
-    return env->CallIntMethod(value, env->GetMethodID(int_class, "intValue", "()I"));
+  jclass value_class = env->GetObjectClass(value);
+  if (env->IsSameObject(value_class, env->FindClass("java/lang/Double"))) {
+    return env->CallDoubleMethod(value, env->GetMethodID(value_class, "doubleValue", "()D"));
+  } else if (env->IsSameObject(value_class, env->FindClass("java/lang/Integer"))) {
+    return env->CallIntMethod(value, env->GetMethodID(value_class, "intValue", "()I"));
   } else {
     throw std::runtime_error("Unsupported type");
   }
