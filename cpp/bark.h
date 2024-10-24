@@ -16,8 +16,8 @@
 │ PERFORMANCE OF THIS SOFTWARE.                                                │
 ╚─────────────────────────────────────────────────────────────────────────────*/
 #pragma once
-#include "log.h"
 
+#include "log.h"
 #include "encodec.h"
 #include "ggml-backend.h"
 #include "ggml.h"
@@ -230,7 +230,7 @@ extern "C" {
     BARK_API bool bark_model_quantize(
         const char *fname_inp,
         const char *fname_out,
-        enum bark_ggml_ftype ftype);
+        enum bark_bark_ggml_ftype ftype);
 
     /**
      * @brief Frees the memory allocated for a bark context.

@@ -28,6 +28,8 @@ done
 
 patch -p0 < ./scripts/ggml-alloc.c.patch
 patch -p0 < ./scripts/ggml.c.patch
+patch -p0 < ./scripts/encodec.h.patch
+patch -p0 < ./scripts/bark.h.patch
 
 if [ "$(uname)" == "Darwin" ]; then
   SED="sed -i ''"
@@ -35,18 +37,10 @@ else
   SED="sed -i"
 fi
 
-PATCH_LOG_FILES=(
-  cpp/encodec.h
-  cpp/encodec.cpp
-  cpp/bark.h
-  cpp/bark.cpp
-)
-
+PATCH_LOG_FILES=(encodec.cpp bark.cpp)
 for file in "${PATCH_LOG_FILES[@]}"; do
-  filename=$(basename "$file")
-  $SED 's/fprintf(stderr, /LOGE(/g' "cpp/$filename"
-  $SED 's/printf(/LOGI(/g' "cpp/$filename"
-  $SED '/#pragma once/a #include "log.h"' "cpp/$filename"
+  $SED 's/fprintf(stderr, /LOGE(/g' "cpp/$file"
+  $SED 's/printf(/LOGI(/g' "cpp/$file"
 done
 
 for file in "${FILES[@]}"; do

@@ -23,8 +23,8 @@
  *
  */
 #pragma once
-#include "log.h"
 
+#include "log.h"
 #include "ggml-alloc.h"
 #include "ggml-backend.h"
 #include "ggml.h"

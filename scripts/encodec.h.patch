@@ -1,0 +1,10 @@
+--- cpp/encodec.h	2024-10-24 20:34:51.833204870 +0800
++++ cpp/encodec.h	2024-10-24 22:12:41.954029891 +0800
+@@ -24,6 +24,7 @@
+  */
+ #pragma once
+ 
++#include "log.h"
+ #include "ggml-alloc.h"
+ #include "ggml-backend.h"
+ #include "ggml.h"

@@ -1,0 +1,19 @@
+--- cpp/bark.h	2024-10-24 20:34:51.828204835 +0800
++++ cpp/bark.h	2024-10-24 22:13:49.632389060 +0800
+@@ -17,6 +17,7 @@
+ ╚─────────────────────────────────────────────────────────────────────────────*/
+ #pragma once
+ 
++#include "log.h"
+ #include "encodec.h"
+ #include "ggml-backend.h"
+ #include "ggml.h"
+@@ -229,7 +230,7 @@
+     BARK_API bool bark_model_quantize(
+         const char *fname_inp,
+         const char *fname_out,
+-        enum ggml_ftype ftype);
++        enum bark_ggml_ftype ftype);
+ 
+     /**
+      * @brief Frees the memory allocated for a bark context.
