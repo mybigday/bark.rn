@@ -43,9 +43,10 @@ PATCH_LOG_FILES=(
 )
 
 for file in "${PATCH_LOG_FILES[@]}"; do
-  $SED 's/fprintf(stderr, /LOGE(/g' "$file"
-  $SED 's/printf(/LOGI(/g' "$file"
-  $SED '/#pragma once/a #include "log.h"' "$file"
+  filename=$(basename "$file")
+  $SED 's/fprintf(stderr, /LOGE(/g' "cpp/$filename"
+  $SED 's/printf(/LOGI(/g' "cpp/$filename"
+  $SED '/#pragma once/a #include "log.h"' "cpp/$filename"
 done
 
 for file in "${FILES[@]}"; do
