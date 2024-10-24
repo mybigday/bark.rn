@@ -1,0 +1,60 @@
+--- cpp/ggml.c	2024-10-24 14:42:04.330406051 +0800
++++ cpp/ggml.c	2024-10-24 15:55:29.873849304 +0800
+@@ -4712,18 +4712,16 @@
+ 
+     const size_t mem_size = params.mem_buffer ? params.mem_size : GGML_PAD(params.mem_size, GGML_MEM_ALIGN);
+ 
+-    *ctx = (struct ggml_context) {
+-        /*.mem_size           =*/ mem_size,
+-        /*.mem_buffer         =*/ params.mem_buffer ? params.mem_buffer : GGML_ALIGNED_MALLOC(mem_size),
+-        /*.mem_buffer_owned   =*/ params.mem_buffer ? false : true,
+-        /*.no_alloc           =*/ params.no_alloc,
+-        /*.no_alloc_save      =*/ params.no_alloc,
+-        /*.n_objects          =*/ 0,
+-        /*.objects_begin      =*/ NULL,
+-        /*.objects_end        =*/ NULL,
+-        /*.scratch            =*/ { 0, 0, NULL, },
+-        /*.scratch_save       =*/ { 0, 0, NULL, },
+-    };
++    ctx->mem_size = mem_size;
++    ctx->mem_buffer = params.mem_buffer ? params.mem_buffer : GGML_ALIGNED_MALLOC(mem_size);
++    ctx->mem_buffer_owned = params.mem_buffer ? false : true;
++    ctx->no_alloc = params.no_alloc;
++    ctx->no_alloc_save = params.no_alloc;
++    ctx->n_objects = 0;
++    ctx->objects_begin = NULL;
++    ctx->objects_end = NULL;
++    ctx->scratch = (struct ggml_scratch) { 0, 0, NULL };
++    ctx->scratch_save = (struct ggml_scratch) { 0, 0, NULL };
+ 
+     GGML_ASSERT(ctx->mem_buffer != NULL);
+ 
+@@ -18481,18 +18479,16 @@
+     struct ggml_object * obj = ggml_new_object(ctx, GGML_OBJECT_GRAPH, GGML_GRAPH_SIZE);
+     struct ggml_cgraph * cgraph = (struct ggml_cgraph *) ((char *) ctx->mem_buffer + obj->offs);
+ 
+-    *cgraph = (struct ggml_cgraph) {
+-        /*.n_nodes      =*/ 0,
+-        /*.n_leafs      =*/ 0,
+-        /*.nodes        =*/ { NULL },
+-        /*.grads        =*/ { NULL },
+-        /*.leafs        =*/ { NULL },
+-        /*.hash_table   =*/ { NULL },
+-        /*.order        =*/ GGML_CGRAPH_EVAL_ORDER_LEFT_TO_RIGHT,
+-        /*.perf_runs    =*/ 0,
+-        /*.perf_cycles  =*/ 0,
+-        /*.perf_time_us =*/ 0,
+-    };
++    cgraph->n_nodes = 0;
++    cgraph->n_leafs = 0;
++    memset(cgraph->nodes, 0, sizeof(cgraph->nodes));
++    memset(cgraph->grads, 0, sizeof(cgraph->grads));
++    memset(cgraph->leafs, 0, sizeof(cgraph->leafs));
++    memset(cgraph->visited_hash_table, 0, sizeof(cgraph->visited_hash_table));
++    cgraph->order = GGML_CGRAPH_EVAL_ORDER_LEFT_TO_RIGHT;
++    cgraph->perf_runs = 0;
++    cgraph->perf_cycles = 0;
++    cgraph->perf_time_us = 0;
+ 
+     return cgraph;
+ }

@@ -23,5 +23,37 @@ FILES=(
 )
 
 for file in "${FILES[@]}"; do
-  cp "$file" "cpp"
+  cp "$file" "cpp/"
+done
+
+patch -p0 < ./scripts/ggml-alloc.c.patch
+patch -p0 < ./scripts/ggml.c.patch
+
+if [ "$(uname)" == "Darwin" ]; then
+  SED="sed -i ''"
+else
+  SED="sed -i"
+fi
+
+PATCH_LOG_FILES=(
+  cpp/encodec.h
+  cpp/encodec.cpp
+  cpp/bark.h
+  cpp/bark.cpp
+)
+
+for file in "${PATCH_LOG_FILES[@]}"; do
+  $SED 's/fprintf(stderr, /LOGE(/g' "$file"
+  $SED 's/printf(/LOGI(/g' "$file"
+  $SED '/#pragma once/a #include "log.h"' "$file"
+done
+
+for file in "${FILES[@]}"; do
+  filename=$(basename "$file")
+  # Add prefix to avoid redefinition with other libraries using ggml like whisper.rn
+  $SED 's/GGML_/BARK_GGML_/g' "cpp/$filename"
+  $SED 's/ggml_/bark_ggml_/g' "cpp/$filename"
+  $SED 's/GGUF_/BARK_GGUF_/g' "cpp/$filename"
+  $SED 's/gguf_/bark_gguf_/g' "cpp/$filename"
+  $SED 's/GGMLMetalClass/BARKGGMLMetalClass/g' "cpp/$filename"
 done

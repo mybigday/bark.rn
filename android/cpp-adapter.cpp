@@ -3,6 +3,7 @@
 #include <jni.h>
 #include <thread>
 #include <tuple>
+#include <android/log.h>
 
 template <typename T>
 T get_map_value(JNIEnv *env, jobject params, const char *key) {
@@ -104,7 +105,8 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_barkrn_BarkContext_nativeInitContext
   if (has_map_key(env, jParams, "seed")) {
     seed = get_map_value<jint>(env, jParams, "seed");
   }
-  auto model_path = env->GetStringUTFChars(jPath, nullptr);
+  const char *model_path = env->GetStringUTFChars(jPath, nullptr);
+  __android_log_print(ANDROID_LOG_INFO, "BarkRN", "Loading model from %s", model_path);
   bark_context *context = bark_load_model(model_path, params, seed);
   env->ReleaseStringUTFChars(jPath, model_path);
   return reinterpret_cast<jlong>(context);
@@ -116,23 +118,25 @@ extern "C" JNIEXPORT jobject JNICALL Java_com_barkrn_BarkContext_nativeGenerate(
   auto context = reinterpret_cast<bark_context *>(jCtx);
   int threads = jThreads;
   if (threads < 0) {
-    threads = std::thread::hardware_concurrency() << 1;
+    threads = std::thread::hardware_concurrency() >> 1;
   } else if (threads == 0) {
     threads = 1;
   }
-  auto text = env->GetStringUTFChars(jText, nullptr);
+  const char *text = env->GetStringUTFChars(jText, nullptr);
+  __android_log_print(ANDROID_LOG_INFO, "BarkRN", "Generating %s with %d threads", text, threads);
   auto success = bark_generate_audio(context, text, threads);
   env->ReleaseStringUTFChars(jText, text);
-  const float *audio_data = bark_get_audio_data(context);
-  const int audio_samples = bark_get_audio_data_size(context);
-  if (success) {
-    auto dest_path = env->GetStringUTFChars(jOutPath, nullptr);
-    std::vector<float> audio_data_vec(audio_data, audio_data + audio_samples);
-    barkrn::pcmToWav(audio_data_vec, sample_rate, dest_path);
-    env->ReleaseStringUTFChars(jOutPath, dest_path);
+  float *audio_data = bark_get_audio_data(context);
+  int audio_samples = bark_get_audio_data_size(context);
+  const char *dest_path = env->GetStringUTFChars(jOutPath, nullptr);
+  __android_log_print(ANDROID_LOG_INFO, "BarkRN", "Generated %d audio samples", audio_samples);
+  if (success && audio_samples > 0) {
+    barkrn::pcmToWav(audio_data, audio_samples, sample_rate, dest_path);
   }
+  env->ReleaseStringUTFChars(jOutPath, dest_path);
   const auto load_time = bark_get_load_time(context);
   const auto eval_time = bark_get_eval_time(context);
+  __android_log_print(ANDROID_LOG_INFO, "BarkRN", "Load time: %f, Eval time: %f", load_time, eval_time);
   auto result_class = env->FindClass("com/barkrn/BarkContext$BarkResult");
   jobject result = env->NewObject(
       result_class, env->GetMethodID(result_class, "<init>", "(ZII)V"), success,

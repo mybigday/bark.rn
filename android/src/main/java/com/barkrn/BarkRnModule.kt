@@ -33,29 +33,33 @@ class BarkRnModule internal constructor(context: ReactApplicationContext) :
 
   @ReactMethod
   override fun init_context(model_path: String, params: ReadableMap, promise: Promise) {
-    try {
-      val id = next_id
-      next_id += 1
-      contexts[id] = BarkContext(model_path, params.toHashMap())
-      promise.resolve(id)
-    } catch (e: Exception) {
-      promise.reject(e)
-    }
+    Thread {
+      try {
+        val id = next_id
+        next_id += 1
+        contexts[id] = BarkContext(model_path, params.toHashMap())
+        promise.resolve(id)
+      } catch (e: Exception) {
+        promise.reject(e)
+      }
+    }.start()
   }
 
   @ReactMethod
   override fun generate(id: Int, text: String, audio_path: String, promise: Promise) {
     contexts[id]?.let { context ->
-      try {
-        val result = context.generate(text, audio_path)
-        val resultMap = Arguments.createMap()
-        resultMap.putBoolean("success", result.success)
-        resultMap.putInt("load_time", result.load_time)
-        resultMap.putInt("eval_time", result.eval_time)
-        promise.resolve(resultMap)
-      } catch (e: Exception) {
-        promise.reject(e)
-      }
+      Thread {
+        try {
+          val result = context.generate(text, audio_path)
+          val resultMap = Arguments.createMap()
+          resultMap.putBoolean("success", result.success)
+          resultMap.putInt("load_time", result.load_time)
+          resultMap.putInt("eval_time", result.eval_time)
+          promise.resolve(resultMap)
+        } catch (e: Exception) {
+          promise.reject(e)
+        }
+      }.start()
     } ?: promise.reject("Context not found")
   }
 
